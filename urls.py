@@ -5,9 +5,10 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
+
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', 'testproject.views.home', name='home'),
+    url(r'^$', 'pages.views.home', name='home'),
     # url(r'^testproject/', include('testproject.foo.urls')),
 
     (r'^api/v1/', include('fiber.api.urls')),
