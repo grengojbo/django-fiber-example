@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     'compressor',
     'pages',
     'fiber',
+    'south',
 )
 
 # A sample logging configuration. The only tangible logging
