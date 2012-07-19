@@ -14,3 +14,10 @@ Installation:
 	$ python manage.py syncdb --migrate
 	$ python manage.py loaddata ./project/fixtures/example_data/fiber.json
 	$ python manage.py runserver 0:8000
+
+::
+
+    Or copy fiber.create.sh.example to fiber.create.sh and edit the variables inside it,
+    then execute:
+
+    $ ./fiber.create.sh
