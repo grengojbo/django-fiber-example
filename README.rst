@@ -7,10 +7,10 @@ Installation:
 
 ::
 
-	$ git clone git://github.com/ridethepony/django-fiber-example.git
-	$ cd django-fiber-example
+	$ git clone git://github.com/mvandewaeter/django-fiber-example.git
+	$ cd django-fiber-example/src
 	$ pip install -r requirements.txt
 	$ cp settings_example.py settings.py
-	$ python manage.py syncdb
-	$ python manage.py loaddata ./fixtures/example_initial_data.json
+	$ python manage.py syncdb --migrate
+	$ python manage.py loaddata ./project/fixtures/example_data/fiber.json
 	$ python manage.py runserver 0:8000
