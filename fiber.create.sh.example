@@ -1,0 +1,140 @@
+#!/bin/bash
+
+# exit on error
+reset
+set -e
+################ CONFIG ################################
+WEBSITE_DIR="" # e.g. /mnt/hgfs/Sites
+VIRTUAL_ENV_DIR="" # e.g. /mnt/hgfs/Virtualenvs
+MyUSER=""       # USERNAME
+MyPASS=""      # PASSWORD
+MyHOST="localhost"  # Hostname
+myDOMAIN="www.example.com"
+mySITE="www.example.com"
+#######################################################
+# check config
+
+# check arguments
+if [ $# -ne 1 ]
+then
+  echo "Usage: `basename $0` example_projectname"
+  echo "E.g.: `basename $0` example2"
+  exit $E_BADARGS
+fi
+
+# request sudo password
+sudo -v
+
+if [ -d $WEBSITE_DIR ]; then
+	echo "CHECK - Website dir exists"
+else
+    echo "FAIL - Website dir does not exist, aborting"
+	exit
+fi
+
+if [ -d $VIRTUAL_ENV_DIR ]; then
+	echo "CHECK - VirtualEnv dir exists"
+else
+    echo "FAIL - VIRTUAL_ENV_DIR dir does not exist, aborting"
+	exit
+fi
+
+# creating virtualenv
+export WORKON_HOME=$VIRTUAL_ENV_DIR
+source /usr/local/bin/virtualenvwrapper.sh
+echo "CHECK - Initialised Virtualenvwrapper"
+
+# go to folder
+cd $WEBSITE_DIR
+if [ -d "$WEBSITE_DIR/$1" ]; then
+   echo "FAIL - Website '$1' already exist, aborting"
+   exit
+else
+    echo "CHECK - Website '$1' does not yet exist"
+fi
+
+if [ -d "$VIRTUAL_ENV_DIR/$1" ]; then
+   echo "FAIL - VirtualEnv '$1' already exist, aborting"
+   exit
+else
+    echo "CHECK - VirtualEnv '$1' does not yet exist"
+fi
+
+#create the directory
+mkdir $1
+#enter the dir
+cd $1
+
+# # create copy of trunk in repository
+git clone git@github.com:mvdwaeter/django-fiber-example.git .
+echo "CHECK - Git cloned from git@github.com:mvdwaeter/django-fiber-example.git"
+
+# # create necessary files, set permissions
+sh -c "cat > ./settings.py" <<EOF
+from settings_default import *
+
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'STORAGE_ENGINE': 'InnoDB',
+        'NAME': '$1',
+        'USER': '$MyUSER',
+        'PASSWORD': '$MyPASS',
+        'HOST': '$MyHOST',
+        'PORT': '',
+    }
+}
+
+# Site
+DOMAIN_NAME = '$myDOMAIN'
+SITE_NAME = '$mySITE'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EOF
+echo "CHECK - Succesfully created settings.py"
+
+
+env=`mkvirtualenv --no-site-packages $1`
+echo "CHECK - Succesfully created VirtualEnv '$1'"
+
+# create postactivate file
+sh -c "cat > $VIRTUAL_ENV_DIR/$1/bin/postactivate" <<EOF
+#!/bin/bash
+# This hook is run after this virtualenv is activated.
+cd $WEBSITE_DIR/$1
+echo "use rs to runserver, use sdb to syncdb"
+alias rs="python $WEBSITE_DIR/$1/src/manage.py runserver 0:8000"
+alias sdb="python $WEBSITE_DIR/$1/src/manage.py syncdb"
+EOF
+echo "CHECK - Succesfully created postactivate script"
+
+source $VIRTUAL_ENV_DIR/$1/bin/activate
+
+#install requirements
+if [ -f "requirements.txt" ]; then
+	echo "CHECK - requirements.txt exists"
+else
+    echo "FAIL - requirements.txt does not exist, aborting"
+	exit
+fi
+pip install -r requirements.txt
+echo "CHECK - succesfully installed requirements from requirements.txt"
+
+DBS=`mysql --host=$MyHOST --user=$MyUSER --password=$MyPASS -Bse 'show databases'| egrep -v 'information_schema|mysql'`
+for db in $DBS; do
+if [ "$db" = "$1" ]
+then
+echo "FAIL - database '$1' already exists, aborting"
+    exit
+  fi
+done
+
+mysql --host=$MyHOST --user=$MyUSER --password=$MyPASS --execute='CREATE DATABASE '$1' CHARACTER SET utf8 COLLATE utf8_general_ci';
+echo "CHECK - created database $1"
+
+python manage.py syncdb --migrate
+python manage.py loaddata project/fixtures/example_data/fiber.json
