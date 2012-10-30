@@ -1,0 +1,30 @@
+#!/bin/sh
+
+my_database="example1"
+my_username=""
+my_password=""
+my_hostname="localhost"
+admin_username="admin"
+
+admin_email=""
+
+reset
+
+find . -name "*.pyc" -delete
+echo "removed *.pyc from project"
+
+mysql --host=$my_hostname --user=$my_username --password=$my_password --execute="DROP DATABASE \`$my_database\`;"
+echo "dropped database $my_database"
+
+mysql --host=$my_hostname --user=$my_username --password=$my_password --execute="CREATE DATABASE \`$my_database\` CHARACTER SET utf8 COLLATE utf8_general_ci;"
+echo "created database $my_database"
+
+python manage.py syncdb --migrate --noinput
+echo "successfully executed syncdb --migrate"
+
+echo "creating superuser"
+python manage.py createsuperuser --username=admin --email=$admin_email
+echo "created superuser"
+
+python manage.py loaddata project/fixtures/example_data/fiber.json
+echo "loaded example data fixtures"

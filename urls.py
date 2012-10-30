@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     # url(r'^$', 'testproject.views.home', name='home'),
     # url(r'^testproject/', include('testproject.foo.urls')),
 
-    (r'^api/v2/', include('fiber.rest_api.urls')),
+    (r'^api/v1/', include('fiber.api.urls')),
     (r'^admin/fiber/', include('fiber.admin_urls')),
     (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', {'packages': ('fiber',),}),
 
@@ -19,12 +19,8 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT,}),
+
     (r'', 'fiber.views.page'), # this should always be placed last
 )
-
-if settings.DEBUG:
-    urlpatterns += patterns('',
-        url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
-            'document_root': settings.MEDIA_ROOT,
-        }),
-    )

@@ -1,4 +1,6 @@
 *.pyc
+reset.sh
 settings.py
-/media/
-/static/
+/src/media/
+/src/static/
+/src/.sass-cache/

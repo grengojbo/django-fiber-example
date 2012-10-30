@@ -31,13 +31,17 @@
 					</ul>
 				</nav>
 				<article>
-					{% show_page_content "main" %}
+					{% block content %}
+						{% show_page_content "main" %}
+					{% endblock %}
 				</article>
 			</section>
 			<aside id="aside-right">
+				{% block aside %}
 				{% show_page_content "aside" %}
 
 				{% show_content "address" %}
+				{% endblock %}
 			</aside>
 		</div>
 	</div>

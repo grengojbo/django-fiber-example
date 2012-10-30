@@ -1,0 +1,1130 @@
+[
+    {
+        "pk": 9, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "contentitem", 
+            "name": "content item", 
+            "app_label": "fiber"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "contenttype", 
+            "name": "content type", 
+            "app_label": "contenttypes"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "file", 
+            "name": "file", 
+            "app_label": "fiber"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "group", 
+            "name": "group", 
+            "app_label": "auth"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "image", 
+            "name": "image", 
+            "app_label": "fiber"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "logentry", 
+            "name": "log entry", 
+            "app_label": "admin"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "migrationhistory", 
+            "name": "migration history", 
+            "app_label": "south"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "page", 
+            "name": "page", 
+            "app_label": "fiber"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "pagecontentitem", 
+            "name": "page content item", 
+            "app_label": "fiber"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "permission", 
+            "name": "permission", 
+            "app_label": "auth"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "session", 
+            "name": "session", 
+            "app_label": "sessions"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "site", 
+            "name": "site", 
+            "app_label": "sites"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "user", 
+            "name": "user", 
+            "app_label": "auth"
+        }
+    }, 
+    {
+        "pk": "2e8092ba245f74153fe9a690f551e871", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2012-08-02T15:13:47Z", 
+            "session_data": "NzRmZDk1NzkyMDFlNTA0YWUxMmU4YmUzOWNlYTkzNDdlMjMwNTcyMjqAAn1xAShVEl9hdXRoX3Vz\nZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHED\nVQ1fYXV0aF91c2VyX2lkcQSKAQF1Lg==\n"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "sites.site", 
+        "fields": {
+            "domain": "example.com", 
+            "name": "example.com"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "fiber.contentitem", 
+        "fields": {
+            "content_markup": "", 
+            "updated": "2012-01-19T20:30:08Z", 
+            "name": "", 
+            "created": "2011-06-05T09:47:59Z", 
+            "template_name": "", 
+            "used_on_pages_data": "[{\"url\": \"/\", \"title\": \"Home\"}]", 
+            "protected": false, 
+            "content_html": "<h2>\r\n\tA ContentItem in the &quot;main&quot; block</h2>\r\n<p>\r\n\t<em>Double-click to edit this ContentItem.</em></p>\r\n<p>\r\n\tLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>\r\n", 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "fiber.contentitem", 
+        "fields": {
+            "content_markup": "", 
+            "updated": "2012-01-19T20:30:08Z", 
+            "name": "", 
+            "created": "2011-06-05T09:48:11Z", 
+            "template_name": "", 
+            "used_on_pages_data": "[{\"url\": \"/\", \"title\": \"Home\"}]", 
+            "protected": false, 
+            "content_html": "<h2>\r\n\tA ContentItem in the &quot;aside&quot; block</h2>\r\n<p>\r\n\t<em>Double-click to edit this ContentItem.</em></p>\r\n<p>\r\n\tUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>\r\n", 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "fiber.contentitem", 
+        "fields": {
+            "content_markup": "", 
+            "updated": "2012-01-19T20:30:08Z", 
+            "name": "address", 
+            "created": "2011-06-05T09:53:32Z", 
+            "template_name": "", 
+            "used_on_pages_data": "[]", 
+            "protected": false, 
+            "content_html": "<h2>\r\n\tA ContentItem named &quot;address&quot;</h2>\r\n<p>\r\n\t<em>Double-click to edit this ContentItem.</em></p>\r\n", 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 36, 
+            "updated": "2011-06-04T18:37:13Z", 
+            "level": 0, 
+            "parent": null, 
+            "title": "mainmenu", 
+            "url": "", 
+            "template_name": "", 
+            "created": "2011-06-04T18:37:13Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 1, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 3, 
+            "updated": "2011-06-04T18:37:36Z", 
+            "level": 1, 
+            "parent": 1, 
+            "title": "Home", 
+            "url": "/", 
+            "template_name": "", 
+            "created": "2011-06-04T18:37:36Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 2, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 9, 
+            "updated": "2011-06-04T18:38:41Z", 
+            "level": 1, 
+            "parent": 1, 
+            "title": "About us", 
+            "url": "about-us", 
+            "template_name": "", 
+            "created": "2011-06-04T18:38:07Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 4, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 6, 
+            "updated": "2011-06-04T18:57:17Z", 
+            "level": 2, 
+            "parent": 3, 
+            "title": "Mission", 
+            "url": "mission", 
+            "template_name": "", 
+            "created": "2011-06-04T18:57:17Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 5, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 8, 
+            "updated": "2011-06-04T18:57:37Z", 
+            "level": 2, 
+            "parent": 3, 
+            "title": "Our people", 
+            "url": "our-people", 
+            "template_name": "", 
+            "created": "2011-06-04T18:57:37Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 7, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 29, 
+            "updated": "2011-06-04T18:38:48Z", 
+            "level": 1, 
+            "parent": 1, 
+            "title": "Products", 
+            "url": "products", 
+            "template_name": "", 
+            "created": "2011-06-04T18:38:23Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 10, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 20, 
+            "updated": "2011-06-04T18:57:49Z", 
+            "level": 2, 
+            "parent": 4, 
+            "title": "Product A", 
+            "url": "product-a", 
+            "template_name": "", 
+            "created": "2011-06-04T18:57:49Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 11, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 13, 
+            "updated": "2011-06-04T19:00:34Z", 
+            "level": 3, 
+            "parent": 8, 
+            "title": "Testimonials", 
+            "url": "testimonials", 
+            "template_name": "", 
+            "created": "2011-06-04T19:00:34Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 12, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 19, 
+            "updated": "2011-06-04T18:59:08Z", 
+            "level": 3, 
+            "parent": 8, 
+            "title": "Downloads", 
+            "url": "downloads", 
+            "template_name": "", 
+            "created": "2011-06-04T18:59:08Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 14, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 16, 
+            "updated": "2011-06-04T19:00:05Z", 
+            "level": 4, 
+            "parent": 13, 
+            "title": "Technical data sheet", 
+            "url": "technical-data-sheet", 
+            "template_name": "", 
+            "created": "2011-06-04T19:00:05Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 15, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 18, 
+            "updated": "2011-06-04T19:00:19Z", 
+            "level": 4, 
+            "parent": 13, 
+            "title": "User manual", 
+            "url": "user-manual", 
+            "template_name": "", 
+            "created": "2011-06-04T19:00:19Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 17, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 24, 
+            "updated": "2011-06-04T18:58:00Z", 
+            "level": 2, 
+            "parent": 4, 
+            "title": "Product B", 
+            "url": "product-b", 
+            "template_name": "", 
+            "created": "2011-06-04T18:58:00Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 21, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 23, 
+            "updated": "2011-06-04T18:59:19Z", 
+            "level": 3, 
+            "parent": 9, 
+            "title": "Downloads", 
+            "url": "downloads", 
+            "template_name": "", 
+            "created": "2011-06-04T18:59:19Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 22, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 28, 
+            "updated": "2011-06-04T18:58:15Z", 
+            "level": 2, 
+            "parent": 4, 
+            "title": "Product C", 
+            "url": "product-c", 
+            "template_name": "", 
+            "created": "2011-06-04T18:58:15Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 25, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 27, 
+            "updated": "2011-06-04T18:59:28Z", 
+            "level": 3, 
+            "parent": 10, 
+            "title": "Downloads", 
+            "url": "downloads", 
+            "template_name": "", 
+            "created": "2011-06-04T18:59:28Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 26, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 35, 
+            "updated": "2011-06-04T18:38:33Z", 
+            "level": 1, 
+            "parent": 1, 
+            "title": "Contact", 
+            "url": "contact", 
+            "template_name": "", 
+            "created": "2011-06-04T18:38:33Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 30, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 32, 
+            "updated": "2011-06-04T18:58:26Z", 
+            "level": 2, 
+            "parent": 5, 
+            "title": "Newsletter", 
+            "url": "newsletter", 
+            "template_name": "", 
+            "created": "2011-06-04T18:58:26Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 31, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 34, 
+            "updated": "2011-06-04T18:58:47Z", 
+            "level": 2, 
+            "parent": 5, 
+            "title": "Directions", 
+            "url": "directions", 
+            "template_name": "", 
+            "created": "2011-06-04T18:58:47Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 33, 
+            "protected": false, 
+            "tree_id": 1, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 6, 
+            "updated": "2011-06-04T19:01:11Z", 
+            "level": 0, 
+            "parent": null, 
+            "title": "generalmenu", 
+            "url": "", 
+            "template_name": "", 
+            "created": "2011-06-04T19:01:11Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 1, 
+            "protected": false, 
+            "tree_id": 2, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 3, 
+            "updated": "2011-06-04T19:01:23Z", 
+            "level": 1, 
+            "parent": 19, 
+            "title": "Disclaimer", 
+            "url": "disclaimer", 
+            "template_name": "", 
+            "created": "2011-06-04T19:01:23Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 2, 
+            "protected": false, 
+            "tree_id": 2, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "fiber.page", 
+        "fields": {
+            "rght": 5, 
+            "updated": "2011-06-04T22:04:07Z", 
+            "level": 1, 
+            "parent": 19, 
+            "title": "Privacy statement", 
+            "url": "privacy-statement", 
+            "template_name": "", 
+            "created": "2011-06-04T22:04:07Z", 
+            "mark_current_regexes": "", 
+            "redirect_page": null, 
+            "lft": 4, 
+            "protected": false, 
+            "tree_id": 2, 
+            "is_public": true, 
+            "show_in_menu": true, 
+            "metadata": null
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "fiber.pagecontentitem", 
+        "fields": {
+            "sort": 0, 
+            "block_name": "main", 
+            "content_item": 1, 
+            "page": 2
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "fiber.pagecontentitem", 
+        "fields": {
+            "sort": 0, 
+            "block_name": "aside", 
+            "content_item": 2, 
+            "page": 2
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-07-19T15:11:01Z", 
+            "app_name": "fiber", 
+            "migration": "0001_initial"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-07-19T15:11:01Z", 
+            "app_name": "fiber", 
+            "migration": "0002_auto__chg_field_image_image__chg_field_file_file"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-07-19T15:11:01Z", 
+            "app_name": "fiber", 
+            "migration": "0003_auto__chg_field_contentitem_protected__add_field_page_alias_page__chg_"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-07-19T15:11:01Z", 
+            "app_name": "fiber", 
+            "migration": "0004_auto__del_field_page_alias_page__add_field_page_redirect_page"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-07-19T15:11:01Z", 
+            "app_name": "fiber", 
+            "migration": "0005_auto__del_field_contentitem_html__add_field_contentitem_content_markup"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-07-19T15:11:01Z", 
+            "app_name": "fiber", 
+            "migration": "0006_urls2onefield"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-07-19T15:11:01Z", 
+            "app_name": "fiber", 
+            "migration": "0007_auto__del_field_page_relative_url__del_field_page_named_url"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-07-19T15:11:01Z", 
+            "app_name": "fiber", 
+            "migration": "0008_auto__add_field_contentitem_metadata__add_field_page_metadata"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-07-19T15:11:01Z", 
+            "app_name": "fiber", 
+            "migration": "0009_auto__add_field_contentitem_template_name"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-07-19T15:11:01Z", 
+            "app_name": "fiber", 
+            "migration": "0010_auto__add_field_page_is_public__chg_field_page_url"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-07-19T15:11:01Z", 
+            "app_name": "fiber", 
+            "migration": "0011_auto__add_field_contentitem_used_on_pages_data"
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_logentry", 
+            "name": "Can add log entry", 
+            "content_type": 7
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_logentry", 
+            "name": "Can change log entry", 
+            "content_type": 7
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_logentry", 
+            "name": "Can delete log entry", 
+            "content_type": 7
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_group", 
+            "name": "Can add group", 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_group", 
+            "name": "Can change group", 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_group", 
+            "name": "Can delete group", 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_permission", 
+            "name": "Can add permission", 
+            "content_type": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_permission", 
+            "name": "Can change permission", 
+            "content_type": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_permission", 
+            "name": "Can delete permission", 
+            "content_type": 1
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_user", 
+            "name": "Can add user", 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_user", 
+            "name": "Can change user", 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_user", 
+            "name": "Can delete user", 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_contenttype", 
+            "name": "Can add content type", 
+            "content_type": 4
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_contenttype", 
+            "name": "Can change content type", 
+            "content_type": 4
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_contenttype", 
+            "name": "Can delete content type", 
+            "content_type": 4
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_contentitem", 
+            "name": "Can add content item", 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_contentitem", 
+            "name": "Can change content item", 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_contentitem", 
+            "name": "Can delete content item", 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 37, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_file", 
+            "name": "Can add file", 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_file", 
+            "name": "Can change file", 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_file", 
+            "name": "Can delete file", 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_image", 
+            "name": "Can add image", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 35, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_image", 
+            "name": "Can change image", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 36, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_image", 
+            "name": "Can delete image", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_page", 
+            "name": "Can add page", 
+            "content_type": 10
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_page", 
+            "name": "Can change page", 
+            "content_type": 10
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_page", 
+            "name": "Can delete page", 
+            "content_type": 10
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_pagecontentitem", 
+            "name": "Can add page content item", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_pagecontentitem", 
+            "name": "Can change page content item", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_pagecontentitem", 
+            "name": "Can delete page content item", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_session", 
+            "name": "Can add session", 
+            "content_type": 5
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_session", 
+            "name": "Can change session", 
+            "content_type": 5
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_session", 
+            "name": "Can delete session", 
+            "content_type": 5
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_site", 
+            "name": "Can add site", 
+            "content_type": 6
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_site", 
+            "name": "Can change site", 
+            "content_type": 6
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_site", 
+            "name": "Can delete site", 
+            "content_type": 6
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_migrationhistory", 
+            "name": "Can add migration history", 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_migrationhistory", 
+            "name": "Can change migration history", 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_migrationhistory", 
+            "name": "Can delete migration history", 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "admin", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": true, 
+            "is_staff": true, 
+            "last_login": "2012-07-19T15:13:47Z", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "pbkdf2_sha256$10000$pAsPGGCOtl6S$IDDvtbz8c2M+4gp7n8mldQgkdtzR2TQ7nuRsX4Ue5y0=", 
+            "email": "info@michaelvdw.nl", 
+            "date_joined": "2012-07-19T15:11:07Z"
+        }
+    }
+]
