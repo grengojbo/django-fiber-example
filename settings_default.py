@@ -97,6 +97,7 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = DEFAULT_SETTINGS.MIDDLEWARE_CLASSES + (
     'fiber.middleware.ObfuscateEmailAddressMiddleware',
     'fiber.middleware.AdminPageMiddleware',
+    'fiber.middleware.PageFallbackMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
@@ -124,8 +125,8 @@ INSTALLED_APPS = (
     'piston',
     'mptt',
     'compressor',
-    'pages',
     'fiber',
+    'pages',
 )
 
 # A sample logging configuration. The only tangible logging
