@@ -1,5 +1,5 @@
 *.pyc
-settings.py
+DjangoApp/settings/local.py
 public/media/
 public/static/
 fabsettings.py
