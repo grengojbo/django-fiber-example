@@ -24,7 +24,15 @@ env.repository_default = DEPLOY_DEFAULT_REPOSITORY
 
 
 def virt_comm(command):
-    local('source ~/.virtualenvs/{0}/bin/activate && {1}'.format(env.virt, command))
+    local("/bin/bash -l -c 'source /usr/local/pythonbrew/venvs/Python-2.7.3/{0}/bin/activate && {1}'".format(env.virt, command))
+    #local('source /usr/local/pythonbrew/venvs/Python-3.3.0/{0}/bin/activate && {1}'.format(env.virt, command))
+    #local('source ~/.virtualenvs/{0}/bin/activate && {1}'.format(env.virt, command))
+
+@task
+def pip():
+    env.lcwd = os.path.abspath(os.path.dirname(__file__))
+    env.debug = True
+    virt_comm('pip install -r ./requirements/dev.txt')
 
 def deploy():
     """
@@ -202,10 +210,12 @@ def local_template_render(local_template, dict, local_target):
 
 BITBUCKET_AUTH=(BITBUCKET_USER, BITBUCKET_PASSWORD )
 
+@task
 def run():
     env.debug = True
     virt_comm('python ./manage.py runserver_plus'.replace('/', os.path.sep))
 
+@task
 def compile():
     env.lcwd = os.path.abspath(os.path.dirname(__file__))
     env.debug = True
@@ -213,7 +223,7 @@ def compile():
     virt_comm('python ./manage.py compress --force'.replace('/', os.path.sep))
     virt_comm('python ./manage.py syncdb --noinput --migrate'.replace('/', os.path.sep))
 
-
+@task
 def init():
     # cwd => ./deploy
     env.lcwd = os.path.abspath(os.path.dirname(__file__))
