@@ -1,0 +1,9 @@
+*.pyc
+settings.py
+/media/
+/static/
+fabsettings.py
+.idea/
+*.db
+*.sqlite
+*.log

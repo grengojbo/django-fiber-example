@@ -1,0 +1,33 @@
+Pillow==1.7.8
+django-mptt==0.5.5
+django-compressor>=1.2
+djangorestframework==2.1.17
+
+Markdown
+FeedParser
+
+# Deployment
+Fabric
+fabtools
+
+# L10n/i18n
+Babel
+#-e git://github.com/clouserw/tower.git#egg=tower
+pytils
+pytz
+
+# Admin
+django_extensions
+
+# Migrations
+South
+
+# API
+requests
+
+# Translate
+django-modeltranslation
+#django-modeltranslation-wrapper
+
+#Django==1.4.5
+Django

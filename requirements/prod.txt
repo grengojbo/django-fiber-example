@@ -1,0 +1,5 @@
+# Install everything that needs to be compiled
+-r all.txt
+
+django-fiber
+django-fiber-modeltranslation
