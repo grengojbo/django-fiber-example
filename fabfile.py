@@ -1,5 +1,7 @@
+# -*- mode: python; coding: utf-8; -*-
 import posixpath
-import os, re
+import os
+import re
 import fabtools
 from fabtools.files import is_dir
 from fabtools.require import nginx, deb, python, files
@@ -14,27 +16,84 @@ from fabsettings import DEPLOY_USER, DEPLOY_PASSWORD, DEPLOY_HOSTS, DEPLOY_DEFAU
 # end
 
 env.user = DEPLOY_USER
+env.project_user = 'oceanplaza'
+env.project_group = 'oceanplaza'
 env.password = DEPLOY_PASSWORD
 env.hosts = DEPLOY_HOSTS
 env.no_input_mode = False
 env.virt = VIRT_NAME
+env.project_dir_name = PROJECTS_ROOT
+
+#env.v_format = '/usr/local/pythonbrew/venvs/Python-2.7.3/{0}'.format(env.virt)
+env.v_format = '/opt/www/oceanplaza/.virtualenvs/{0}'.format(env.virt)
+env.virt_home = '.virtualenvs'
+project_virt = 'vario'
 
 env.domain_default = DEPLOY_DEFAULT_DOMAIN
 env.repository_default = DEPLOY_DEFAULT_REPOSITORY
 
 
 def virt_comm(command):
-    local("/bin/bash -l -c 'source /usr/local/pythonbrew/venvs/Python-2.7.3/{0}/bin/activate && {1}'".format(env.virt, command))
+    #local("/bin/bash -l -c 'source /usr/local/pythonbrew/venvs/Python-2.7.3/{0}/bin/activate && {1}'".format(env.virt, command))
     #local('source /usr/local/pythonbrew/venvs/Python-3.3.0/{0}/bin/activate && {1}'.format(env.virt, command))
-    #local('source ~/.virtualenvs/{0}/bin/activate && {1}'.format(env.virt, command))
+    local('source ~/.virtualenvs/{0}/bin/activate && {1}'.format(env.virt, command))
 
-@task
+
 def pip():
     env.lcwd = os.path.abspath(os.path.dirname(__file__))
     env.debug = True
     virt_comm('pip install -r ./requirements/dev.txt')
 
-def deploy():
+
+@task
+def compile(c_param='local'):
+    env.lcwd = os.path.abspath(os.path.dirname(__file__))
+    env.debug = True
+    if c_param == 'local':
+        if not is_dir('{0}/public/static'.format(env.lcwd)):
+            #files.directory('{0}/public/static'.format(env.lcwd), mode='755')
+            files.directory('public/static'.format(env.lcwd))
+        virt_comm('python ./manage.py collectstatic -v 0 --clear --noinput'.replace('/', os.path.sep))
+        virt_comm('python ./manage.py compress --force'.replace('/', os.path.sep))
+        virt_comm('python ./manage.py syncdb --noinput --migrate'.replace('/', os.path.sep))
+    else:
+        with cd(env.project_dir_name):
+            if not is_dir('{0}/public/static'.format(env.project_dir_name)):
+                files.directory('{0}/public/static'.format(env.project_dir_name), use_sudo=True, owner=env.project_user, group=env.project_group, mode='755')
+                sudo('chown -R ' + env.project_user + ':' + env.project_group + ' db* log* public/static* public/media*')
+
+            with fabtools.python.virtualenv(env.v_format):
+                # django comands
+                sudo('python ./manage.py collectstatic -v 0 --clear --noinput', user=env.project_user)
+                sudo('python ./manage.py compress --force', user=env.project_user)
+                sudo('python ./manage.py syncdb --noinput --migrate', user=env.project_user)
+                #sudo('python src/manage.py loaddata fixtures.json', user=env.project_user)
+
+
+@task
+def t(t_param='prod'):
+    env.debug = True
+    with cd(env.project_dir_name):
+        with fabtools.python.virtualenv('/usr/local/pythonbrew/venvs/Python-3.3.0/jbo'):
+            run('python -V')
+
+
+@task
+def libs(lookup_param='prod'):
+    env.debug = True
+    with cd(env.project_dir_name):
+        with fabtools.python.virtualenv(env.v_format):
+            #python.install_requirements('requirements/dev.txt', use_mirrors=False, use_sudo=True, user='jbo', download_cache=pip_cache_dir)
+            python.install_requirements('requirements/{0}.txt'.format(lookup_param))
+
+
+@task
+def deploy(d_param='prod'):
+    execute(libs, lookup_param=d_param)
+    execute(compile, c_param=d_param)
+
+
+def push():
     """
     This function for create django site project work flow on remote server.
     Django site source cloning from remote git repository.
@@ -211,17 +270,16 @@ def local_template_render(local_template, dict, local_target):
 BITBUCKET_AUTH=(BITBUCKET_USER, BITBUCKET_PASSWORD )
 
 @task
-def run():
+def r(h_run='local'):
     env.debug = True
-    virt_comm('python ./manage.py runserver_plus'.replace('/', os.path.sep))
-
-@task
-def compile():
-    env.lcwd = os.path.abspath(os.path.dirname(__file__))
-    env.debug = True
-    virt_comm('python ./manage.py collectstatic -v 0 --clear --noinput'.replace('/', os.path.sep))
-    virt_comm('python ./manage.py compress --force'.replace('/', os.path.sep))
-    virt_comm('python ./manage.py syncdb --noinput --migrate'.replace('/', os.path.sep))
+    if h_run == 'local':
+        virt_comm('python ./manage.py runserver_plus'.replace('/', os.path.sep))
+    else:
+        with cd(env.project_dir_name):
+            r_k = 'python ./manage.py runserver_plus {0}:{1}'.format(env.host, env.run_port)
+            with fabtools.python.virtualenv(env.v_format):
+                # django comands
+                sudo(r_k, user=env.project_user)
 
 @task
 def init():
@@ -262,10 +320,7 @@ def init():
             env.bit_password=BITBUCKET_PASSWORD
 
             import requests as r
-            rez = r.post('https://api.bitbucket.org/1.0/repositories/',
-                data=dict(name=env.project, is_private=True),
-                auth=BITBUCKET_AUTH,
-            )
+            rez = r.post('https://api.bitbucket.org/1.0/repositories/', data=dict(name=env.project, is_private=True), auth=BITBUCKET_AUTH,)
             puts('request status ok: {0}'.format(rez.ok))
 
             if rez.ok:
@@ -275,8 +330,9 @@ def init():
                     local('git remote add origin https://{0}:{2}@bitbucket.org/{0}/{1}.git'.format(env.bit_user, env.project, env.bit_password))
                     local('git push -u origin --all')   # to push changes for the first time
 
-
 if __name__ == '__main__':
     # hack for pycharm run configuration.
-    import subprocess, sys
+    import subprocess
+    import sys
     subprocess.call(['fab', '-f', __file__] + sys.argv[1:])
+    #FabricShell().run()
