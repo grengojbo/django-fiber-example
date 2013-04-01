@@ -2,6 +2,7 @@
 import posixpath
 import os
 import re
+import sys
 import fabtools
 from fabtools.files import is_dir
 from fabtools.require import nginx, deb, python, files
@@ -11,7 +12,7 @@ from fabric.api import *
 __author__ = 'jbo'
 
 # settings
-from fabsettings import DEPLOY_USER, DEPLOY_PASSWORD, DEPLOY_HOSTS, DEPLOY_DEFAULT_DOMAIN, DEPLOY_DEFAULT_REPOSITORY,\
+from fabsettings import DEPLOY_USER, DEPLOY_PASSWORD, DEPLOY_HOSTS, DEPLOY_DEFAULT_DOMAIN, DEPLOY_DEFAULT_REPOSITORY, \
     BITBUCKET_PASSWORD, BITBUCKET_USER, VIRT_NAME, PROJECTS_ROOT, PROJECT_USER, VIRT_HOME
 # end
 
@@ -33,24 +34,25 @@ project_virt = VIRT_NAME
 env.domain_default = DEPLOY_DEFAULT_DOMAIN
 env.repository_default = DEPLOY_DEFAULT_REPOSITORY
 
+env.lcwd = os.path.abspath(os.path.dirname(__file__))
+env.debug = True
+
 
 def virt_comm(command):
     #local("/bin/bash -l -c 'source /usr/local/pythonbrew/venvs/Python-2.7.3/{0}/bin/activate && {1}'".format(env.virt, command))
     #local('source /usr/local/pythonbrew/venvs/Python-3.3.0/{0}/bin/activate && {1}'.format(env.virt, command))
-    #local('source ~/.virtualenvs/{0}/bin/activate && {1}'.format(env.virt, command))
-    local("/bin/bash -l -c '{0}/bin/activate && {1}'".format(env.v_format, command))
+    if sys.platform == 'darwin':
+        local('source ~/.virtualenvs/{0}/bin/activate && {1}'.format(env.virt, command))
+    else:
+        local("/bin/bash -l -c '{0}/bin/activate && {1}'".format(env.v_format, command))
 
 
-def pip():
-    env.lcwd = os.path.abspath(os.path.dirname(__file__))
-    env.debug = True
-    virt_comm('pip install -r ./requirements/dev.txt')
+def pip(r_file='prod'):
+    virt_comm('pip install -r ./requirements/{0}.txt'.format(r_file))
 
 
 @task
-def compile(c_param='local'):
-    env.lcwd = os.path.abspath(os.path.dirname(__file__))
-    env.debug = True
+def c(c_param='local'):
     if c_param == 'local':
         if not is_dir('{0}/public/static'.format(env.lcwd)):
             #files.directory('{0}/public/static'.format(env.lcwd), mode='755')
@@ -61,8 +63,10 @@ def compile(c_param='local'):
     else:
         with cd(env.project_dir_name):
             if not is_dir('{0}/public/static'.format(env.project_dir_name)):
-                files.directory('{0}/public/static'.format(env.project_dir_name), use_sudo=True, owner=env.project_user, group=env.project_group, mode='755')
-                sudo('chown -R ' + env.project_user + ':' + env.project_group + ' db* log* public/static* public/media*')
+                files.directory('{0}/public/static'.format(env.project_dir_name), use_sudo=True, owner=env.project_user,
+                                group=env.project_group, mode='755')
+                sudo(
+                    'chown -R ' + env.project_user + ':' + env.project_group + ' db* log* public/static* public/media*')
 
             with fabtools.python.virtualenv(env.v_format):
                 # django comands
@@ -76,7 +80,7 @@ def compile(c_param='local'):
 def t(t_param='prod'):
     env.debug = True
     with cd(env.project_dir_name):
-        with fabtools.python.virtualenv('/usr/local/pythonbrew/venvs/Python-3.3.0/jbo'):
+        with fabtools.python.virtualenv('/usr/local/pythonbrew/venvs/Python-3.3.0/{0}'.format(t_param)):
             run('python -V')
 
 
@@ -137,7 +141,7 @@ def push():
     else:
         confirm = confirm_global
 
-    validate="^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$"
+    validate = "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$"
     if not env.get("domain"):
         if env.no_input_mode:
             abort("Need set env.domain !")
@@ -168,8 +172,8 @@ def push():
     deb.packages(['git'])
 
     if not fabtools.user.exists('deploy'):
-        fabtools.user.create('deploy', home=PROJECTS_ROOT, group='deploy', create_home=False, system=True, 
-            shell='/bin/false', create_group=True)
+        fabtools.user.create('deploy', home=PROJECTS_ROOT, group='deploy', create_home=False, system=True,
+                             shell='/bin/false', create_group=True)
 
     files.directory(PROJECTS_ROOT, use_sudo=True, owner='root', group='root', mode='755')
     with cd(PROJECTS_ROOT):
@@ -185,7 +189,8 @@ def push():
 
         # proj user create
         if not fabtools.user.exists(env.project_user):
-            fabtools.user.create(env.project_user, home=env.root, group=env.project_group, create_home=False, system=True, shell='/bin/false', create_group=True)
+            fabtools.user.create(env.project_user, home=env.root, group=env.project_group, create_home=False,
+                                 system=True, shell='/bin/false', create_group=True)
 
         # proj infrastructure
         with cd(env.project_dir_name):
@@ -194,20 +199,22 @@ def push():
                 files.directory('src', use_sudo=True, owner='deploy', group='deploy', mode='755')
                 with cd('src'):
                     sudo('rm -Rf .??* *')
-                    sudo('git clone %(repository)s .' % env, user='deploy')
+                    sudo('git clone {repository:s} .'.format(env), user='deploy')
             else:
                 with cd('src'):
                     sudo('git pull', user='deploy')
 
             # proj virtual env
-            if not is_dir('.virtualenvs') or confirm("proj venv dir exist! [rm all and recreate / repeat install]?", default=False):
+            if not is_dir('.virtualenvs') or confirm("proj venv dir exist! [rm all and recreate / repeat install]?",
+                                                     default=False):
                 files.directory('.virtualenvs', use_sudo=True, owner='deploy', group='deploy', mode='755')
                 with cd('.virtualenvs'):
                     sudo('rm -Rf .??* *')
 
             python.virtualenv('.virtualenvs', use_sudo=True, user='deploy', clear=True)
             with fabtools.python.virtualenv('.virtualenvs'):
-                python.install_requirements('src/requirements.txt', use_mirrors=False, use_sudo=True, user='deploy', download_cache=pip_cache_dir)
+                python.install_requirements('src/requirements.txt', use_mirrors=False, use_sudo=True, user='deploy',
+                                            download_cache=pip_cache_dir)
 
             # proj dirs
             files.directory('log', use_sudo=True, owner='root', group='root', mode='755')
@@ -243,12 +250,12 @@ def push():
                     sudo("rm -Rf *.back")
                     sudo("ls -d *{.conf,.ini} | sed 's/.*$/mv -fu \"&\" \"\\0.back\"/' | sh")
                     files.template_file('uwsgi.ini', template_source=uwsgi_conf, context=env,
-                        use_sudo=True, owner='root', group='root', mode='644')
+                                        use_sudo=True, owner='root', group='root', mode='644')
                     files.file('reload', use_sudo=True, owner='root', group='root')
                     sudo('ln -sf $(pwd)/uwsgi.ini /etc/uwsgi/apps-enabled/' + env.project_dir_name + '.ini')
 
                     files.template_file('nginx.conf', template_source=nginx_conf, context=env,
-                        use_sudo=True, owner='root', group='root', mode='644')
+                                        use_sudo=True, owner='root', group='root', mode='644')
                     sudo('ln -sf $(pwd)/nginx.conf /etc/nginx/sites-enabled/' + env.project_dir_name)
 
             sudo('service nginx restart')
@@ -269,7 +276,8 @@ def local_template_render(local_template, dict, local_target):
         with open(local_out, 'w') as out:
             out.write(rendered)
 
-BITBUCKET_AUTH=(BITBUCKET_USER, BITBUCKET_PASSWORD )
+
+BITBUCKET_AUTH = (BITBUCKET_USER, BITBUCKET_PASSWORD)
 
 
 @task
@@ -291,7 +299,8 @@ def init():
     env.lcwd = os.path.abspath(os.path.dirname(__file__))
 
     env.debug = True
-    prompt("project domain: ", "project", validate="^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$")
+    prompt("project domain: ", "project",
+           validate="^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$")
     puts("create project: {0}".format(env.project))
 
     with lcd('..'):
@@ -320,18 +329,22 @@ def init():
             virt_comm('python ./manage.py syncdb && python ./manage.py migrate --noinput'.replace('/', os.path.sep))
 
         if BITBUCKET_USER and BITBUCKET_PASSWORD and confirm_global('create private bitbucket repository?'):
-            env.bit_user=BITBUCKET_USER
-            env.bit_password=BITBUCKET_PASSWORD
+            env.bit_user = BITBUCKET_USER
+            env.bit_password = BITBUCKET_PASSWORD
 
             import requests as r
-            rez = r.post('https://api.bitbucket.org/1.0/repositories/', data=dict(name=env.project, is_private=True), auth=BITBUCKET_AUTH,)
+
+            rez = r.post('https://api.bitbucket.org/1.0/repositories/', data=dict(name=env.project, is_private=True),
+                         auth=BITBUCKET_AUTH, )
             puts('request status ok: {0}'.format(rez.ok))
 
             if rez.ok:
                 with lcd(env.project):
                     #local_template_render('fabfile.txt', env, 'fabs.py')
                     #with lcd('src'):
-                    local('git remote add origin https://{0}:{2}@bitbucket.org/{0}/{1}.git'.format(env.bit_user, env.project, env.bit_password))
+                    local('git remote add origin https://{0}:{2}@bitbucket.org/{0}/{1}.git'.format(env.bit_user,
+                                                                                                   env.project,
+                                                                                                   env.bit_password))
                     local('git push -u origin --all')   # to push changes for the first time
 
 
@@ -339,5 +352,6 @@ if __name__ == '__main__':
     # hack for pycharm run configuration.
     import subprocess
     import sys
+
     subprocess.call(['fab', '-f', __file__] + sys.argv[1:])
     #FabricShell().run()
