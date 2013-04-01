@@ -12,12 +12,12 @@ __author__ = 'jbo'
 
 # settings
 from fabsettings import DEPLOY_USER, DEPLOY_PASSWORD, DEPLOY_HOSTS, DEPLOY_DEFAULT_DOMAIN, DEPLOY_DEFAULT_REPOSITORY,\
-    BITBUCKET_PASSWORD, BITBUCKET_USER, VIRT_NAME, PROJECTS_ROOT
+    BITBUCKET_PASSWORD, BITBUCKET_USER, VIRT_NAME, PROJECTS_ROOT, PROJECT_USER, VIRT_HOME
 # end
 
 env.user = DEPLOY_USER
-env.project_user = 'oceanplaza'
-env.project_group = 'oceanplaza'
+env.project_user = PROJECT_USER
+env.project_group = PROJECT_USER
 env.password = DEPLOY_PASSWORD
 env.hosts = DEPLOY_HOSTS
 env.no_input_mode = False
@@ -25,9 +25,10 @@ env.virt = VIRT_NAME
 env.project_dir_name = PROJECTS_ROOT
 
 #env.v_format = '/usr/local/pythonbrew/venvs/Python-2.7.3/{0}'.format(env.virt)
-env.v_format = '/opt/www/oceanplaza/.virtualenvs/{0}'.format(env.virt)
 env.virt_home = '.virtualenvs'
-project_virt = 'vario'
+env.v_format = '{1}/{0}'.format(env.virt, VIRT_HOME)
+
+project_virt = VIRT_NAME
 
 env.domain_default = DEPLOY_DEFAULT_DOMAIN
 env.repository_default = DEPLOY_DEFAULT_REPOSITORY
@@ -36,7 +37,8 @@ env.repository_default = DEPLOY_DEFAULT_REPOSITORY
 def virt_comm(command):
     #local("/bin/bash -l -c 'source /usr/local/pythonbrew/venvs/Python-2.7.3/{0}/bin/activate && {1}'".format(env.virt, command))
     #local('source /usr/local/pythonbrew/venvs/Python-3.3.0/{0}/bin/activate && {1}'.format(env.virt, command))
-    local('source ~/.virtualenvs/{0}/bin/activate && {1}'.format(env.virt, command))
+    #local('source ~/.virtualenvs/{0}/bin/activate && {1}'.format(env.virt, command))
+    local("/bin/bash -l -c '{0}/bin/activate && {1}'".format(env.v_format, command))
 
 
 def pip():
@@ -269,6 +271,7 @@ def local_template_render(local_template, dict, local_target):
 
 BITBUCKET_AUTH=(BITBUCKET_USER, BITBUCKET_PASSWORD )
 
+
 @task
 def r(h_run='local'):
     env.debug = True
@@ -280,6 +283,7 @@ def r(h_run='local'):
             with fabtools.python.virtualenv(env.v_format):
                 # django comands
                 sudo(r_k, user=env.project_user)
+
 
 @task
 def init():
@@ -329,6 +333,7 @@ def init():
                     #with lcd('src'):
                     local('git remote add origin https://{0}:{2}@bitbucket.org/{0}/{1}.git'.format(env.bit_user, env.project, env.bit_password))
                     local('git push -u origin --all')   # to push changes for the first time
+
 
 if __name__ == '__main__':
     # hack for pycharm run configuration.
