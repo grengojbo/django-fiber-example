@@ -7,3 +7,4 @@ fabsettings.py
 *.db
 *.sqlite
 *.log
+node_modules/
