@@ -24,6 +24,9 @@
         <script src="{% static 'js/vendor/i18next-1.6.0.min.js' %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static 'js/plugins.js' %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static 'js/main.js' %}" type="text/javascript" charset="utf-8"></script>
+    
+    <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+    
     {% endcompress %}
     {% block extrajs %}{% endblock extrajs %}
     {% block extrahead %}{% endblock extrahead %}
