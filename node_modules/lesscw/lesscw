@@ -1,0 +1,68 @@
+#!/usr/bin/env node
+
+(function(){
+  var fs, exec, cp_exec, get_time, path, stats, less2css, dir, source_path;
+  fs = require('fs-dowatch');
+  exec = require('child_process').exec;
+  cp_exec = function(cmd, name, fn){
+    name || (name = 'cmd');
+    exec(cmd, function(err, stdout, stderr){
+      if (err) {
+        console.log(("\x07" + name + ".err: ") + err);
+      }
+      if (stdout) {
+        console.log((name + ".stdout: ") + stdout);
+      }
+      if (stderr) {
+        console.log(("\x07" + name + ".stderr: ") + stderr);
+      }
+      if (fn != null) {
+        return fn.apply(this, arguments);
+      }
+    });
+  };
+  get_time = function(){
+    var x;
+    x = new Date().toISOString();
+    x = x.match(/([0-9]+):([0-9]+):([0-9]+)\.([0-9]+)/);
+    return x[0];
+  };
+  if (process.argv.length < 3) {
+    console.log("Error: no file/directory parameter.\nUsage:\n - `lesscw asd.less` will output `./asd.css` and it will output `./asd.css` on every change of `asd.less`.\n - `lesscw asd` will compile all `./asd/*.less` into `./asd/*.css` and it will do so on every `./asd/*.less` file change.");
+    return false;
+  }
+  path = process.argv.pop();
+  if (!fs.existsSync(path)) {
+    console.log("File or directory `" + path + "` doesnt exist");
+    return false;
+  }
+  stats = fs.statSync(path);
+  less2css = {};
+  if (stats.isFile()) {
+    less2css[path] = path.replace(/\.less$/, '' + '.css');
+  } else {
+    dir = fs.readdirSync(path);
+    dir.forEach(function(_path){
+      if (_path.match(/\.less$/)) {
+        return less2css[path + "/" + _path] = path + "/" + _path.replace(/\.less$/, '' + '.css');
+      }
+    });
+  }
+  if (less2css.length == 0) {
+    console.log("No files found");
+    return false;
+  }
+  for (source_path in less2css) {
+    (fn$.call(this, source_path));
+  }
+  function fn$(source_path){
+    var target_path;
+    target_path = less2css[source_path];
+    fs.dowatch(source_path, function(){
+      var cmd;
+      cmd = "lessc " + source_path + " > " + target_path;
+      console.log(cmd + ", " + get_time());
+      return cp_exec(cmd, 'lesscw');
+    });
+  }
+}).call(this);
