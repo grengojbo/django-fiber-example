@@ -16,5 +16,4 @@ django-debug-toolbar
 Werkzeug
 ipython
 
-django-fiber
 -e git+git://github.com/cypreess/django-fiber-modeltranslation.git#egg=fiber_modeltranslation

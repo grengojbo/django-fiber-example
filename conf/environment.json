@@ -1,0 +1,23 @@
+{"detail": "Authentication credentials were not provided.",
+    "DB_SQL_LOGIN": "dbuser",
+    "MANAGER_COMMAND_DEPLOY": [
+        "collectstatic -v 0 --clear --noinput",
+        "compress --force",
+        "syncdb --noinput --migrate" ],
+    "MANAGER_COMMAND_UPDATE": [
+        "collectstatic -v 0 --clear --noinput",
+        "compress --force",
+        "syncdb --noinput --migrate" ],
+    "MANAGER_COMMAND_RUN": [
+        "collectstatic -v 0 --clear --noinput",
+        "compress --force",
+        "syncdb --noinput --migrate" ],
+    "MANAGER_COMMAND_BACKUP": [
+        "collectstatic -v 0 --clear --noinput",
+        "compress --force",
+        "syncdb --noinput --migrate" ],
+    "MANAGER_COMMAND_RESTORE": [
+        "collectstatic -v 0 --clear --noinput",
+        "compress --force",
+        "syncdb --noinput --migrate" ]
+}

@@ -8,6 +8,7 @@ from fabtools.files import is_dir
 from fabtools.require import nginx, deb, python, files
 from fabric.contrib.console import confirm as confirm_global
 from fabric.api import *
+import json
 
 __author__ = 'jbo'
 
@@ -35,8 +36,11 @@ env.domain_default = DEPLOY_DEFAULT_DOMAIN
 env.repository_default = DEPLOY_DEFAULT_REPOSITORY
 
 env.lcwd = os.path.abspath(os.path.dirname(__file__))
-env.debug = True
 
+with open('/home/dotcloud/environment.json') as f:
+    conf = json.load(f)
+
+env.debug = conf.get('debug', False)
 
 def virt_comm(command):
     #local("/bin/bash -l -c 'source /usr/local/pythonbrew/venvs/Python-2.7.3/{0}/bin/activate && {1}'".format(env.virt, command))
