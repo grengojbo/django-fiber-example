@@ -3,7 +3,7 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-{% load i18n static compress fiber_tags cache %}
+{% load i18n static compress fiber_tags cache %}{% load url from future %}
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="utf-8">
@@ -14,7 +14,7 @@
     {% block meta %}{% endblock meta %}
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     {% compress css %}
-        <link rel="stylesheet" href="{% static 'css/aplication.css' %}" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css" charset="utf-8">
     {% endcompress css %}
     {% block css %}{% endblock css %}
     <script src="{% static 'js/vendor/modernizr-2.6.2.min.js' %}"></script>
@@ -43,6 +43,35 @@
 				<nav id="mainmenu" class="clearfix">
 					{% show_menu "mainmenu" 1 1 %}
 				</nav>
+                
+    <div id="lang_form">
+        <form action="/i18n/setlang/" method="post" id="locale_switcher">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{{ request.path }}" />
+          <label>{% trans 'Choose language' %}:</label>
+          <select name="language" onchange="$('#locale_switcher').submit()">
+            {% for lang in LANGUAGES %}
+            <option value="{{ lang.0 }}" {% if request.LANGUAGE_CODE == lang.0 %}selected{% endif %}>{{ lang.1 }}</option>
+            {% endfor %}
+          </select>
+          <noscript>
+            <input type="submit" value="{% trans "Change language" %}" />
+          </noscript>
+        </form>
+    </div>
+
+<ul id="nav">
+        {% if user.is_authenticated %}
+          <li><a href="{% url 'userena_profile_list' %}"><span>{% trans 'All profiles' %}</span></a></li>
+          <li><a href="{% url 'userena_umessages_list' %}"><span>{% trans 'Messages' %}</span></a></li>
+          <li><a href="{% url 'userena_profile_detail' user.username %}"><span>{% trans 'Account' %} ({{ user.username }})</span></a></li>
+          <li><a href="{% url 'userena_signout' %}"><span>{% trans 'Signout' %}</span></a></li>
+          {% else %}
+          <li><a href="{% url 'userena_signin' %}"><span>{% trans 'Signin' %}</span></a></li>
+          <li><a href="{% url 'userena_signup' %}"><span>{% trans 'Signup' %}</span></a></li>
+          {% endif %}
+        </ul>
+
 			</header>
 			{% endblock header %}
 			{% block layout %}

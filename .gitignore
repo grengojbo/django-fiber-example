@@ -8,3 +8,4 @@ fabsettings.py
 *.sqlite
 *.log
 node_modules/
+userena

@@ -47,6 +47,7 @@ def virt_comm(command):
         local("/bin/bash -l -c '{0}/bin/activate && {1}'".format(env.v_format, command))
 
 
+@task
 def pip(r_file='prod'):
     virt_comm('pip install -r ./requirements/{0}.txt'.format(r_file))
 

@@ -81,7 +81,7 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     'static',
-    )
+)
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -103,7 +103,7 @@ TEMPLATE_LOADERS = (
        'django.template.loaders.filesystem.Loader',
        'django.template.loaders.app_directories.Loader',
        'django.template.loaders.eggs.Loader',
-   )),
+   ),),
 )
 
 # Make this unique, and don't share it with anybody.
@@ -121,9 +121,13 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    'guardian',
     'south',
     'mptt',
     'compressor',
+    'userena',
+    'userena.contrib.umessages',
+    'profiles',
     'fiber',
     'rest_framework',
     'modeltranslation',
@@ -137,6 +141,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'userena.middleware.UserenaLocaleMiddleware',
     'fiber.middleware.ObfuscateEmailAddressMiddleware',
     'fiber.middleware.AdminPageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
@@ -167,13 +174,13 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(PROJECT_ROOT, 'templates'),
-    )
+)
 
 # List of callables that know how to import templates from various sources.
 
 FIXTURE_DIRS = (
     os.path.join(PROJECT_ROOT, 'fixtures'),
-    )
+)
 
 gettext = lambda s: s
 
@@ -186,6 +193,14 @@ LANGUAGES = (
     ('ru', gettext('Russian')),
     ('uk', gettext('Ukraine')),
 )
+
+# Settings used by Userena
+LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
+LOGIN_URL = '/accounts/signin/'
+LOGOUT_URL = '/accounts/signout/'
+AUTH_PROFILE_MODULE = 'profiles.Profile'
+USERENA_DISABLE_PROFILE_LIST = True
+USERENA_MUGSHOT_SIZE = 140
 
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
 #MODELTRANSLATION_TRANSLATION_REGISTRY = 'DjangoApp.translation'
@@ -211,7 +226,7 @@ FIBER_CONTENT_TEMPLATE_CHOICES = (
 FIBER_METADATA_CONTENT_SCHEMA = FIBER_METADATA_PAGE_SCHEMA = {
     'title': {
         'widget': 'select',
-        'values': ['option1', 'option2', 'option3',],
+        'values': ['option1', 'option2', 'option3'],
     },
     'bgcolor': {
         'widget': 'combobox',
@@ -246,15 +261,18 @@ else:
 
 # Add the Guardian and userena authentication backends
 AUTHENTICATION_BACKENDS = (
-    #'guardian.backends.ObjectPermissionBackend',
+    'userena.backends.UserenaAuthenticationBackend',
+    'guardian.backends.ObjectPermissionBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
 # Needed for Django guardian
 ANONYMOUS_USER_ID = -1
 
-## Log settings
+# Test runner
+TEST_RUNNER = 'django.test.simple.DjangoTestSuiteRunner'
 
+## Log settings
 LOG_LEVEL = logging.INFO
 LOG_COLORSQL_ENABLE = True
 LOG_COLORSQL_VERBOSE = True
@@ -282,5 +300,3 @@ LOGGING = {
         },
     }
 }
-
-
