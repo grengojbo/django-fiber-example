@@ -13,4 +13,5 @@ reset.sh
 settings.py
 /src/media/
 /src/static/
+atlassian-ide-plugin.xml
 /src/.sass-cache/
