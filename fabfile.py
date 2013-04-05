@@ -69,7 +69,7 @@ def test(c_param='local'):
 @task
 def c():
     with lcd(env.lcwd):
-        local('git add -p && git commit')
+        local('git add . && git commit')
         local('git push')
 
 
