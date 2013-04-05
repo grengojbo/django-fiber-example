@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+{% load i18n static compress fiber_tags cache %}{% load url from future %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>{% block title %}{{ fiber_page.title }}{% endblock title %}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    {% block meta %}{% endblock meta %}
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    {% compress css %}
+        <link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css" charset="utf-8">
+    {% endcompress css %}
+    {% block css %}{% endblock css %}
+    <script src="{% static 'js/vendor/modernizr-2.6.2.min.js' %}"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{% static 'js/vendor/jquery-1.9.0.min.js' %}" type="text/javascript" charset="utf-8"><\/script>')</script>
+    {% compress js %}
+        <script src="{% static 'js/vendor/i18next-1.6.0.min.js' %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static 'js/plugins.js' %}" type="text/javascript" charset="utf-8"></script>
+    <script src="{% static 'js/main.js' %}" type="text/javascript" charset="utf-8"></script>
+    
+    <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+    
+    {% endcompress %}
+    {% block extrajs %}{% endblock extrajs %}
+    {% block extrahead %}{% endblock extrahead %}
+</head>
+<body class="{% block body_class %}{{ fiber_page.title|slugify }}{% endblock %}">
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+<![endif]-->
+	<div id="wpr-page">
+		<div id="page">
+			{% block header %}
+			<header>
+				<div id="logo">Django Fiber example</div>
+				<nav id="mainmenu" class="clearfix">
+					{% show_menu "mainmenu" 1 1 %}
+				</nav>
+                
+    <div id="lang_form">
+        <form action="/i18n/setlang/" method="post" id="locale_switcher">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{{ request.path }}" />
+          <label>{% trans 'Choose language' %}:</label>
+          <select name="language" onchange="$('#locale_switcher').submit()">
+            {% for lang in LANGUAGES %}
+            <option value="{{ lang.0 }}" {% if request.LANGUAGE_CODE == lang.0 %}selected{% endif %}>{{ lang.1 }}</option>
+            {% endfor %}
+          </select>
+          <noscript>
+            <input type="submit" value="{% trans "Change language" %}" />
+          </noscript>
+        </form>
+    </div>
+
+<ul id="nav">
+        {% if user.is_authenticated %}
+          <li><a href="{% url 'userena_profile_list' %}"><span>{% trans 'All profiles' %}</span></a></li>
+          <li><a href="{% url 'userena_umessages_list' %}"><span>{% trans 'Messages' %}</span></a></li>
+          <li><a href="{% url 'userena_profile_detail' user.username %}"><span>{% trans 'Account' %} ({{ user.username }})</span></a></li>
+          <li><a href="{% url 'userena_signout' %}"><span>{% trans 'Signout' %}</span></a></li>
+          {% else %}
+          <li><a href="{% url 'userena_signin' %}"><span>{% trans 'Signin' %}</span></a></li>
+          <li><a href="{% url 'userena_signup' %}"><span>{% trans 'Signup' %}</span></a></li>
+          {% endif %}
+        </ul>
+
+			</header>
+			{% endblock header %}
+			{% block layout %}
+			<aside id="aside-left">
+				<nav id="submenu">
+					{% show_menu "mainmenu" 2 3 %}
+				</nav>
+			</aside>
+			<section id="main">
+				{% block content_title %}
+				<nav id="breadcrumbs" class="clearfix">
+					<ul>
+						{% for fiber_page in fiber_current_pages %}
+						<li>
+							<a href="{{ fiber_page.get_absolute_url }}">{{ fiber_page.title }}</a>
+						</li>
+						{% endfor %}
+					</ul>
+				</nav>
+				{% endblock content_title %}
+				{% block content %}
+				<article>
+					{% show_page_content "main" %}
+				</article>
+				{% endblock content %}
+			</section>
+			{% block slider %}
+			<aside id="aside-right">
+				{% show_page_content "aside" %}
+                {% cache 600 "fiber:sidebar:address" request.user.username %}
+				{% show_content "address" %}
+                {% endcache %}
+			</aside>
+			{% endblock slider %}
+			{% endblock layout %}
+			{% block footer %}
+			{% endblock footer %}
+		</div>
+	</div>
+</body>
+</html>

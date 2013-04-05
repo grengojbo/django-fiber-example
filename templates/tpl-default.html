@@ -1,0 +1,13 @@
+{% load i18n static compress fiber_tags cache %}
+{% block title %}{{ fiber_page.title }}{% endblock title %}
+{% block meta %}{% endblock meta %}
+{% block css %}{% endblock css %}
+{% block extrajs %}{% endblock extrajs %}
+{% block extrahead %}{% endblock extrahead %}
+{% block header %}{% endblock header %}
+{% block layout %}
+    {% block content_title %}{% endblock content_title %}
+    {% block content %}{% endblock content %}
+    {% block slider %}{% endblock slider %}
+{% endblock layout %}
+{% block footer %}{% endblock footer %}

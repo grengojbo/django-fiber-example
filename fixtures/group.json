@@ -1,0 +1,34 @@
+[
+  {
+    "pk": 3, 
+    "model": "auth.group", 
+    "fields": {
+      "name": "administrators", 
+      "permissions": []
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "auth.group", 
+    "fields": {
+      "name": "managers", 
+      "permissions": []
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "auth.group", 
+    "fields": {
+      "name": "translators", 
+      "permissions": []
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "auth.group", 
+    "fields": {
+      "name": "users", 
+      "permissions": []
+    }
+  }
+]

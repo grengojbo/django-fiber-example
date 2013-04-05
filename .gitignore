@@ -1,4 +1,14 @@
 *.pyc
+DjangoApp/settings/local.py
+public/media/
+public/static/
+fabsettings.py
+.idea/
+*.db
+*.sqlite
+*.log
+node_modules/
+userena
 reset.sh
 settings.py
 /src/media/
