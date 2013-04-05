@@ -12,6 +12,8 @@
         "collectstatic -v 0 --clear --noinput",
         "compress --force",
         "syncdb --noinput --migrate" ],
+    "MANAGER_COMMAND_TEST": [
+        "syncdb --noinput --migrate" ],
     "MANAGER_COMMAND_BACKUP": [
         "collectstatic -v 0 --clear --noinput",
         "compress --force",

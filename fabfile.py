@@ -37,10 +37,11 @@ env.repository_default = DEPLOY_DEFAULT_REPOSITORY
 
 env.lcwd = os.path.abspath(os.path.dirname(__file__))
 
-with open('/home/dotcloud/environment.json') as f:
+with open('./conf/environment.json') as f:
     conf = json.load(f)
 
 env.debug = conf.get('debug', False)
+
 
 def virt_comm(command):
     #local("/bin/bash -l -c 'source /usr/local/pythonbrew/venvs/Python-2.7.3/{0}/bin/activate && {1}'".format(env.virt, command))
@@ -52,19 +53,36 @@ def virt_comm(command):
 
 
 @task
-def pip(r_file='prod'):
-    virt_comm('pip install -r ./requirements/{0}.txt'.format(r_file))
+def pi(r_file='prod'):
+    with lcd(env.lcwd):
+        virt_comm('pip install -r ./requirements/{0}.txt'.format(r_file))
 
 
 @task
-def c(c_param='local'):
+def test(c_param='local'):
     if c_param == 'local':
-        if not is_dir('{0}/public/static'.format(env.lcwd)):
-            #files.directory('{0}/public/static'.format(env.lcwd), mode='755')
-            files.directory('public/static'.format(env.lcwd))
-        virt_comm('python ./manage.py collectstatic -v 0 --clear --noinput'.replace('/', os.path.sep))
-        virt_comm('python ./manage.py compress --force'.replace('/', os.path.sep))
-        virt_comm('python ./manage.py syncdb --noinput --migrate'.replace('/', os.path.sep))
+        with lcd(env.lcwd):
+            for mcom in conf.get('MANAGER_COMMAND_TEST'):
+                virt_comm('python ./manage.py {0}'.format(mcom).replace('/', os.path.sep))
+
+
+@task
+def c():
+    with lcd(env.lcwd):
+        local('git add -p && git commit')
+        local('git push')
+
+
+@task
+def u(c_param='prod'):
+    if c_param == 'local':
+        with lcd(env.lcwd):
+            if not is_dir('{0}/public/static'.format(env.lcwd)):
+                #files.directory('{0}/public/static'.format(env.lcwd), mode='755')
+                files.directory('public/static'.format(env.lcwd))
+
+            for mcom in conf.get('MANAGER_COMMAND_RUN'):
+                virt_comm('python ./manage.py {0}'.format(mcom).replace('/', os.path.sep))
     else:
         with cd(env.project_dir_name):
             if not is_dir('{0}/public/static'.format(env.project_dir_name)):
@@ -75,9 +93,11 @@ def c(c_param='local'):
 
             with fabtools.python.virtualenv(env.v_format):
                 # django comands
-                sudo('python ./manage.py collectstatic -v 0 --clear --noinput', user=env.project_user)
-                sudo('python ./manage.py compress --force', user=env.project_user)
-                sudo('python ./manage.py syncdb --noinput --migrate', user=env.project_user)
+                for mcom in conf.get('MANAGER_COMMAND_RUN'):
+                    sudo('python ./manage.py {0}'.format(mcom), user=env.project_user)
+                #sudo('python ./manage.py collectstatic -v 0 --clear --noinput', user=env.project_user)
+                #sudo('python ./manage.py compress --force', user=env.project_user)
+                #sudo('python ./manage.py syncdb --noinput --migrate', user=env.project_user)
                 #sudo('python src/manage.py loaddata fixtures.json', user=env.project_user)
 
 
