@@ -21,5 +21,23 @@
     "MANAGER_COMMAND_RESTORE": [
         "collectstatic -v 0 --clear --noinput",
         "compress --force",
-        "syncdb --noinput --migrate" ]
+        "syncdb --noinput --migrate" ],
+    "DEPLOY_HOSTS": ["10.0.7.15"],
+    "dev": {
+        "PROJECTS_ROOT": "",
+        "version": "2.7.3",
+        "venv": "test7-test7",
+        "requirement": "requirements/dev.txt",
+        "settings": "",
+        "settings_local": "",
+        "settings_tpl": "",
+        "distribute": ["FeedParser"]
+    },
+    "prod": {
+        "PROJECTS_ROOT": "",
+        "vers": "2.7.3"
+    },
+    "local": {
+        "PROJECTS_ROOT": ""
+    }
 }

@@ -4,43 +4,66 @@ import os
 import re
 import sys
 import fabtools
-from fabtools.files import is_dir
-from fabtools.require import nginx, deb, python, files
+from fabtools.files import is_dir, is_link, is_file
+from fabtools.require import nginx, deb, python, files, git
 from fabric.contrib.console import confirm as confirm_global
+from fabric.contrib.files import exists
 from fabric.api import *
 import json
 
 __author__ = 'jbo'
 
 # settings
-from fabsettings import DEPLOY_USER, DEPLOY_PASSWORD, DEPLOY_HOSTS, DEPLOY_DEFAULT_DOMAIN, DEPLOY_DEFAULT_REPOSITORY, \
-    BITBUCKET_PASSWORD, BITBUCKET_USER, VIRT_NAME, PROJECTS_ROOT, PROJECT_USER, VIRT_HOME
+from fabsettings import DEPLOY_DEFAULT_DOMAIN, DEPLOY_DEFAULT_REPOSITORY, PROJECT_PASWD, BITBUCKET_PASSWORD, BITBUCKET_USER, VIRT_NAME, PROJECTS_ROOT, PROJECT_USER, VIRT_HOME
 # end
 
-env.user = DEPLOY_USER
-env.project_user = PROJECT_USER
-env.project_group = PROJECT_USER
-env.password = DEPLOY_PASSWORD
-env.hosts = DEPLOY_HOSTS
+
+env.lcwd = os.path.abspath(os.path.dirname(__file__))
+
+#with open('./conf/environment.json') as f:
+
+#env.project_group = PROJECT_USER
 env.no_input_mode = False
 env.virt = VIRT_NAME
 env.project_dir_name = PROJECTS_ROOT
-
+env.new_user_default = 'test'
+env.new_passwd_default = 'test'
+env.venv_default = 'prod'
+env.pyver_default = '2.7.3'
 #env.v_format = '/usr/local/pythonbrew/venvs/Python-2.7.3/{0}'.format(env.virt)
 env.virt_home = '.virtualenvs'
+env.python_dir = '/usr/local/pythonbrew/venvs/Python-'
 env.v_format = '{1}/{0}'.format(env.virt, VIRT_HOME)
-
+env.home_user = '/opt/www'
 project_virt = VIRT_NAME
-
+env.project_default = 'test'
 env.domain_default = DEPLOY_DEFAULT_DOMAIN
 env.repository_default = DEPLOY_DEFAULT_REPOSITORY
 
-env.lcwd = os.path.abspath(os.path.dirname(__file__))
 
 with open('./conf/environment.json') as f:
     conf = json.load(f)
 
 env.debug = conf.get('debug', False)
+env.pyver = '2.7.3'
+try:
+    env.config = json.load(open('./conf/deploy.json'))
+    env.user = env.config['id']
+    env.password = env.config['passwd']
+    env.repository = env.config['www']['repository']
+except Exception, e:
+    env.user = conf.get('DEPLOY_USER', PROJECT_USER)
+    env.password = conf.get('DEPLOY_PASSWORD', PROJECT_PASWD)
+    #raise e
+
+env.hosts = conf.get('DEPLOY_HOSTS')
+try:
+    env.home_dir = posixpath.join(env.home_user, env.config['passwd'])
+    env.project_root = posixpath.join(env.home_user, env.config['id'], env.config['www']['approot'])
+    env.root = posixpath.join(env.home_user, env.config['id'], env.config['www']['approot'], 'current')
+    env.shared = posixpath.join(env.home_user, env.config['id'], env.config['www']['approot'], 'shared')
+except Exception, e:
+    pass
 
 
 def virt_comm(command):
@@ -53,9 +76,30 @@ def virt_comm(command):
 
 
 @task
+def m(dj_command='-h'):
+    """
+    Run django manage command EXAMPLE: fab m:show_urls
+    """
+    with lcd(env.lcwd):
+        virt_comm('python ./manage.py {0}'.format(dj_command).replace('/', os.path.sep))
+
+
+@task
 def pi(r_file='prod'):
+    """
+    Run pip install ARG prod,dev EXAMPLE: fab pi:dev
+    """
     with lcd(env.lcwd):
         virt_comm('pip install -r ./requirements/{0}.txt'.format(r_file))
+
+
+@task
+def pu(r_file='prod'):
+    """
+    Run pip install -U ARG prod,dev EXAMPLE: fab pi:dev
+    """
+    with lcd(env.lcwd):
+        virt_comm('pip install -U -r ./requirements/{0}.txt'.format(r_file))
 
 
 @task
@@ -64,6 +108,14 @@ def test(c_param='local'):
         with lcd(env.lcwd):
             for mcom in conf.get('MANAGER_COMMAND_TEST'):
                 virt_comm('python ./manage.py {0}'.format(mcom).replace('/', os.path.sep))
+
+
+@task
+def sh(lookup_param='python'):
+    if lookup_param == 'python':
+        run('pybrew list')
+    elif lookup_param == 'pip':
+        run('pip --version')
 
 
 @task
@@ -84,17 +136,19 @@ def u(c_param='prod'):
             for mcom in conf.get('MANAGER_COMMAND_RUN'):
                 virt_comm('python ./manage.py {0}'.format(mcom).replace('/', os.path.sep))
     else:
-        with cd(env.project_dir_name):
-            if not is_dir('{0}/public/static'.format(env.project_dir_name)):
-                files.directory('{0}/public/static'.format(env.project_dir_name), use_sudo=True, owner=env.project_user,
-                                group=env.project_group, mode='755')
-                sudo(
-                    'chown -R ' + env.project_user + ':' + env.project_group + ' db* log* public/static* public/media*')
-
-            with fabtools.python.virtualenv(env.v_format):
+        with cd(env.root):
+            # if not is_dir('{0}/public/static'.format(env.project_dir_name)):
+            #     files.directory('{0}/public/static'.format(env.project_dir_name), use_sudo=True, owner=env.project_user,
+            #                     group=env.project_group, mode='755')
+            #     sudo(
+            #         'chown -R ' + env.project_user + ':' + env.project_group + ' db* log* public/static* public/media*')
+            
+            env.virt = posixpath.join(env.home_dir, env.virt_home, conf[lookup_param]['venv'])
+            with prefix('pythonbrew use {0}'.format(env.pyver)):
                 # django comands
-                for mcom in conf.get('MANAGER_COMMAND_RUN'):
-                    sudo('python ./manage.py {0}'.format(mcom), user=env.project_user)
+                with fabtools.python.virtualenv(env.virt):
+                    for mcom in conf.get('MANAGER_COMMAND_RUN'):
+                        run('python ./manage.py {0}'.format(mcom))
                 #sudo('python ./manage.py collectstatic -v 0 --clear --noinput', user=env.project_user)
                 #sudo('python ./manage.py compress --force', user=env.project_user)
                 #sudo('python ./manage.py syncdb --noinput --migrate', user=env.project_user)
@@ -103,25 +157,121 @@ def u(c_param='prod'):
 
 @task
 def t(t_param='prod'):
-    env.debug = True
+    env.project_dir_name = conf[t_param]['PROJECTS_ROOT']
     with cd(env.project_dir_name):
         with fabtools.python.virtualenv('/usr/local/pythonbrew/venvs/Python-3.3.0/{0}'.format(t_param)):
             run('python -V')
 
 
 @task
-def libs(lookup_param='prod'):
-    env.debug = True
-    with cd(env.project_dir_name):
-        with fabtools.python.virtualenv(env.v_format):
-            #python.install_requirements('requirements/dev.txt', use_mirrors=False, use_sudo=True, user='jbo', download_cache=pip_cache_dir)
-            python.install_requirements('requirements/{0}.txt'.format(lookup_param))
+def libs(lookup_param='prod', pip='install'):
+    with cd(env.home_dir):
+        # pip cache
+        pip_cache_dir = posixpath.join(env.shared, '.pip.cache')
+        with cd(env.root):
+            try:
+                env.pyver = conf[lookup_param]['version']
+            except:
+                pass
+            env.virt = posixpath.join(env.home_dir, env.virt_home, conf[lookup_param]['venv'])
+            with prefix('pythonbrew use {0}'.format(env.pyver)):
+                run('python -V')
+                with fabtools.python.virtualenv(env.virt):
+                    fabtools.python_distribute.install(conf[lookup_param]['distribute'])
+                    python.install_requirements(conf[lookup_param]['requirement'], use_mirrors=False, download_cache=pip_cache_dir)
 
 
 @task
-def deploy(d_param='prod'):
-    execute(libs, lookup_param=d_param)
-    execute(compile, c_param=d_param)
+def deploy(lookup_param='prod', pip='install'):
+    with cd(env.home_dir):
+        files.directory(env.project_root, mode='750')
+        files.directory(env.shared, mode='750')
+        with cd(env.shared):
+            files.directory('.pip.cache', mode='750')
+            files.directory('db', mode='750')
+            files.directory('log', mode='750')
+            files.directory('pids', mode='750')
+            files.directory('system', mode='750')
+            files.directory('media', mode='750')
+    with cd(env.project_root):
+        git.working_copy(env.repository, env.root, branch=env.config['www']['branch'])
+        with cd(env.root):
+            if not exists('db'):
+                run('ln -s {0}/{1} {2}/'.format(env.shared, 'db', env.root))
+            if not exists('log'):
+                run('ln -s {0}/{1} {2}/'.format(env.shared, 'log', env.root))
+            if not exists('public/media'):
+                run('ln -s {0}/{1} {2}/public/'.format(env.shared, 'media', env.root))
+            execute(libs, lookup_param=lookup_param, pip=pip)
+    #execute(compile, c_param=d_param)
+
+
+@task
+def create(venv=None, pyver=None):
+    deb.packages(['libjpeg8', 'libjpeg8-dev', 'libfreetype6', 'libfreetype6-dev', 'zlib1g-dev'])
+    validate = "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$"
+    if not env.get("new_user"):
+        if env.no_input_mode:
+            env.new_user = env.new_user_default
+        else:
+            prompt("User: ", "new_user", env.get('new_user_default', ''), validate=validate)
+
+    if not fabtools.user.exists(env.new_user):
+        prompt("Password for {0}: ".format(env.new_user), "new_passwd", '', validate=validate)
+        env.home_dir = '{0}/{1}'.format(env.home_user, env.new_user)
+        fabtools.user.create(env.new_user, home=env.home_dir, group=env.new_user, create_home=True, system=False,
+                             shell='/bin/bash', create_group=True, password=env.new_passwd)
+
+    if not env.get("project"):
+        if env.no_input_mode:
+            env.project = env.project_default
+        else:
+            prompt("Project name: ", "project", env.get('project_default', ''))
+
+    if not env.get("repository"):
+        if env.no_input_mode:
+            env.repository = env.repository_default
+        else:
+            prompt("Deploy from: ", "repository", env.get('repository_default', ''))
+
+    if not env.get("domain"):
+        if env.no_input_mode:
+            abort("Need set env.domain !")
+        else:
+            prompt("Project DNS url: ", "domain", env.get('domain_default', ''), validate=validate)
+    else:
+        if not re.findall(validate, env.domain):
+            abort("Invalid env.domain !")
+
+    require('repository', 'domain', 'project')
+    if venv is not None:
+        env.venv = venv
+    else:
+        prompt("Virtual ENV: ", "venv", env.get('venv_default', ''), validate=validate)
+    if pyver is not None:
+        env.pyver = pyver
+    else:
+        prompt("Python VERSION: ", "pyver", env.get('pyver_default', ''), validate=validate)
+    env.virt = '{0}/{1}/{2}'.format(env.home_user, env.new_user, env.virt_home)
+    pyver_dir = '{0}{1}/{2}-{3}'.format(env.python_dir, env.pyver, env.new_user, env.venv)
+    files.directory(env.virt, mode='750', owner=env.new_user, group=env.new_user, use_sudo=True)
+    if not is_dir(posixpath.join(env.virt, env.venv)):
+        with prefix('pythonbrew use {0}'.format(env.pyver)):
+            if not is_dir(pyver_dir):
+                sudo('pythonbrew venv create {0}-{1}'.format(env.new_user, env.venv))
+                sudo('ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so {0}/lib/'.format(pyver_dir))
+                sudo('ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so {0}/lib/'.format(pyver_dir))
+                sudo('ln -s /usr/lib/x86_64-linux-gnu/libz.so {0}/lib/'.format(pyver_dir))
+            sudo("find {2}/venvs/ -type d -iname '{1}-{0}' -print0 | xargs -I{3} -0 chown -R --preserve-root --no-dereference {1}:pythonbrew '{3}'".format(env.venv, env.new_user, '${PYTHONBREW_ROOT}', '{}'))
+            sudo('ln -s {0} {1}/'.format(pyver_dir, env.virt))
+            sudo('chown -R {0}:{0} {1}'.format(env.new_user, env.virt))
+
+    #with cd(env.home_dir):
+    #    # pip cache
+    #    files.directory('.pip.cache', use_sudo=True, owner='deploy', group='deploy', mode='755')
+    #    #pip_cache_dir = posixpath.join(PROJECTS_ROOT, '.pip.cache')
+    #execute(libs, lookup_param=d_param)
+    #execute(compile, c_param=d_param)
 
 
 def push():
@@ -196,10 +346,6 @@ def push():
 
     deb.packages(['git'])
 
-    if not fabtools.user.exists('deploy'):
-        fabtools.user.create('deploy', home=PROJECTS_ROOT, group='deploy', create_home=False, system=True,
-                             shell='/bin/false', create_group=True)
-
     files.directory(PROJECTS_ROOT, use_sudo=True, owner='root', group='root', mode='755')
     with cd(PROJECTS_ROOT):
         # pip cache
@@ -241,20 +387,6 @@ def push():
                 python.install_requirements('src/requirements.txt', use_mirrors=False, use_sudo=True, user='deploy',
                                             download_cache=pip_cache_dir)
 
-            # proj dirs
-            files.directory('log', use_sudo=True, owner='root', group='root', mode='755')
-            files.directory('db', use_sudo=True, owner=env.project_user, group=env.project_group, mode='755')
-            files.directory('media', use_sudo=True, owner=env.project_user, group=env.project_group, mode='755')
-            files.directory('static', use_sudo=True, owner=env.project_user, group=env.project_group, mode='755')
-            sudo('chown -R ' + env.project_user + ':' + env.project_group + ' db* static* media*')
-
-            # django comands
-            with fabtools.python.virtualenv('.virtualenvs'):
-                sudo('python src/manage.py collectstatic --noinput', user=env.project_user)
-                sudo('python src/manage.py syncdb --noinput', user=env.project_user)
-                sudo('python src/manage.py migrate --noinput', user=env.project_user)
-                #sudo('python src/manage.py loaddata fixtures.json', user=env.project_user)
-
             # ------------------- #
             # WEB SERVER SETTINGS #
             # ------------------- #
@@ -292,7 +424,6 @@ def push():
 #    return res.succeeded
 
 
-
 def local_template_render(local_template, dict, local_target):
     local_file_template = os.path.join(os.path.dirname(__file__), 'template', local_template)
     local_out = os.path.join(env.lcwd, local_target)
@@ -307,6 +438,9 @@ BITBUCKET_AUTH = (BITBUCKET_USER, BITBUCKET_PASSWORD)
 
 @task
 def r(h_run='local'):
+    """
+    Run Server
+    """
     env.debug = True
     if h_run == 'local':
         virt_comm('python ./manage.py runserver_plus'.replace('/', os.path.sep))
