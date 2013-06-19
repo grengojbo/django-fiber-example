@@ -1,0 +1,7 @@
+id: test5
+passwd: test5
+www:
+    type: django
+    approot: project_name_default
+    domain: example.sky5.com.ua
+    repository: https://username@bitbucket.org/username/projectname.git

@@ -1,0 +1,14 @@
+{
+  "id": "test7",
+  "passwd": "test7",
+  "www": {
+    "type": "django",
+    "approot": "test7",
+    "domain": "example.sky5.com.ua",
+    "branch": "master",
+    "repository": "https://github.com/grengojbo/django-fiber-example.git"
+  },
+  "database": {
+    "type": "mysql"
+  }
+}
